@@ -31,58 +31,18 @@ public class EksamenChat extends Application {
 
 
     public static void main(String[] args) {
+        // Lager initiell servertråd
         new Thread(() -> {
             try {
                 ServerSocket server = new ServerSocket(8000);
                 while (true) {
                     Socket socket = server.accept();
-                    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                    out.writeObject("Dette er en test");
-                /*
-                int n = (int) (in.readObject());
-                if (n < 0 || n >= ordtak.length)
-                    out.writeObject("ERROR");
-                else
-                    out.writeObject(ordtak[n]);
-                 */
-   //                 String input = (String) in.readObject();
-   //                 outputStreams.add(input);
-   //                 out.writeObject(outputStreams);
-                    InetAddress inetAddress = socket.getInetAddress();
-                    Map input = (Map) in.readObject();
-                    if (input != null) {
-                        Date tid = new Date(System.currentTimeMillis());
-                        String navn = (String) input.get("brukerNavn");
-                        String ip = inetAddress.getHostAddress();
-                        String rom = (String) input.get("rom");
-                        String melding = (String) input.get("melding");
-                        // Logg nyRad = new Logg(id, navn, ip, rom, melding);
-                        // Kall på Adaptor må ligge her?? (blir krøll om ligger i konstruktør Logg)
-                        Adaptor.insertLogg(tid, navn, ip, rom, melding);
-                    }
-
-                    /*
-                    Logg nyRad = new Logg(
-                            input.get("id"),
-                            input.get("tidspunkt"),
-                            input.get("brukernavn"),
-                            input.get("klientIP"),
-                            input.get("rom"),
-                            input.get("melding"));
-
-                     */
-                    System.out.println(input);
-                    in.close();
-                    out.close();
-                    socket.close();
+                    // Lager ny tråd for ny tilkobling
+                    new Thread(new BehandleKlient(socket)).start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("IO");
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                System.out.println("Class");
             }
         }).start();
         launch(args);
