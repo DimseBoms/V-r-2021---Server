@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Date;
@@ -37,32 +38,28 @@ public class EksamenChat extends Application {
                     Socket socket = server.accept();
                     ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                    System.out.println("While");
+                    out.writeObject("Dette er en test");
                 /*
                 int n = (int) (in.readObject());
                 if (n < 0 || n >= ordtak.length)
                     out.writeObject("ERROR");
                 else
                     out.writeObject(ordtak[n]);
-
                  */
    //                 String input = (String) in.readObject();
    //                 outputStreams.add(input);
    //                 out.writeObject(outputStreams);
-
+                    InetAddress inetAddress = socket.getInetAddress();
                     Map input = (Map) in.readObject();
                     if (input != null) {
-                        int id = (int) input.get("id");
-                        Date tid = (Date) input.get("tidspunkt");
-                        //            Date sqlTid = tid; SKAL VI HA TID FRA KLIENT ELLER TJENER - ELLER BEGGE??
-                        String navn = (String) input.get("brukernavn");
-                        String ip = (String) input.get("klientIP");
+                        Date tid = new Date(System.currentTimeMillis());
+                        String navn = (String) input.get("brukerNavn");
+                        String ip = inetAddress.getHostAddress();
                         String rom = (String) input.get("rom");
                         String melding = (String) input.get("melding");
-                        Logg nyRad = new Logg(id, navn, ip, rom, melding);
+                        // Logg nyRad = new Logg(id, navn, ip, rom, melding);
                         // Kall på Adaptor må ligge her?? (blir krøll om ligger i konstruktør Logg)
                         Adaptor.insertLogg(tid, navn, ip, rom, melding);
-                        // Oppfrisking av tjener GUI her?
                     }
 
                     /*
