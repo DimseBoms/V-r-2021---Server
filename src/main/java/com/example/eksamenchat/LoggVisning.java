@@ -22,7 +22,7 @@ public class LoggVisning extends VBox {
     private final TableColumn<Logg, String> ROMNAVN =             new TableColumn<>();
     private final TableColumn<Logg, String> MELDING =             new TableColumn<>();
 
-    private final ObservableList<Logg> DATA_M = FXCollections.observableArrayList();
+    protected final static ObservableList<Logg> DATA_M = FXCollections.observableArrayList();
 
 
     public LoggVisning( ) {

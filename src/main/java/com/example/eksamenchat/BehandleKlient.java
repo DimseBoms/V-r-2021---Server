@@ -34,9 +34,20 @@ public class BehandleKlient implements Runnable {
             Map input = (Map) innStrøm.readObject();
             if (input != null) {
                 this.tid = new Date(System.currentTimeMillis());
-                this.navn = (String) input.get("brukerNavn");
+                this.navn = (String) input.get("brukernavn");
                 this.ip = socket.getInetAddress().getHostAddress();
+                this.rom = (String) input.get("rom");
+                this.melding = (String) input.get("melding");
+                System.out.println("Data inn "+navn);
                 // Skal feste kall på adaptor/database her
+
+                // Alle aktuelle kall på Adaptor:
+                //     Adaptor.insertLogg(tid, navn, ip, null, null);
+                //     Adaptor.insertLogg(tid, navn, ip, rom, null);
+                //     Adaptor.insertLogg(tid, navn, ip, rom, melding);
+
+                Adaptor.insertLogg(tid,navn, ip, rom, melding);
+
             }
             ArrayList<String> romliste = new ArrayList<>();
             romliste.add("TestRom1");
@@ -47,8 +58,9 @@ public class BehandleKlient implements Runnable {
             innStrøm.close();
             utStrøm.close();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-            System.out.println();
+            System.out.println("FEIL "+e.getMessage());
+          //  System.out.println();
         }
     }
+
 }

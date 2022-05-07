@@ -9,7 +9,7 @@ public class Adaptor {
     private static String txtFil = "medlemmer.txt";
     protected static String oppdatertFilnavn = "";
     protected static ArrayList<Logg> loggInnføringer = new ArrayList<>(); // denne burde ligge i class Medlem?
-
+    static int sisteId;
 
     private Adaptor() {
 
@@ -74,6 +74,28 @@ public class Adaptor {
             pstmt.setString(4, romNavn);
             pstmt.setString(5, melding);
             pstmt.executeUpdate();
+            // Henter ut høyeste logg ID fra DB
+            selectMaksId();
+            // Oppdatering av LoggVisning (GUI):
+            LoggVisning.DATA_M.add(new Logg(sisteId, tidspunkt, bruker, klientIP, romNavn, melding));
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            disConnect();
+        }
+    }
+
+    protected static void selectMaksId() {
+        try (Connection conn = connect() ) {
+            String sql = "select MAX(id) from Logg;";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            //    loggInnføringer.clear(); // sletter mellomlagring
+        //    lagreLogg(rs); // mellomlagrer treff
+            sisteId = rs.getInt(1);
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
@@ -127,7 +149,7 @@ public class Adaptor {
                 String klientIP = rs.getString(4);
                 String romNavn = rs.getString(5);
                 String melding = rs.getString(6);
-                loggInnføringer.add(new Logg(id, bruker, klientIP, romNavn, melding));
+                loggInnføringer.add(new Logg(id, tid, bruker, klientIP, romNavn, melding));
             }
         } catch (SQLException e) {
             System.out.println("Her" + e.getMessage());

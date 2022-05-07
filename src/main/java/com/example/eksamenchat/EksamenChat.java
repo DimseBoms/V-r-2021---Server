@@ -51,8 +51,8 @@ public class EksamenChat extends Application {
 
     @Override
     public void start(Stage stage) {
-//        Adaptor.dropLogg();
-//        Adaptor.createLogg();
+    //    Adaptor.dropLogg();
+    //    Adaptor.createLogg();
         long millis = System.currentTimeMillis();
         java.sql.Date testDato = new java.sql.Date(millis);
 
@@ -60,7 +60,7 @@ public class EksamenChat extends Application {
     //    Logg testLogg = new Logg(1, "Tore", "172.10.50.111", "NavnPåRom", "Dette er en lang melding");
   //      Adaptor.insertLogg(1, testDato, "Tore", "172.10.50.111", null, null);
  //       Adaptor.insertLogg(2, testDato, "Tore", "172.10.50.111", "NavnPåRom", null);
-  //      Adaptor.insertLogg(3, testDato, "Tore", "172.10.50.111", "NavnPåRom", "Dette er en lang melding");
+
 
     //    Adaptor.selectLoggId(666);
    //     Adaptor.selectLoggId(2);
@@ -78,10 +78,14 @@ public class EksamenChat extends Application {
         Button button = new Button("Manuell oppfriskning");
         root.getChildren().addAll(button, romVisning(), loggVisning());
         button.setOnAction(e -> {
+            Adaptor.insertLogg(testDato,"Tore", "172.10.50.111", "NavnPåRom", "Dette er en lang melding");
+            /*
             root.getChildren().clear();
             Adaptor.loggInnføringer.clear();
             Adaptor.selectAll();
             root.getChildren().addAll(button, romVisning(), loggVisning());
+
+             */
         });
 
       //  root.getChildren().add(romVisning());

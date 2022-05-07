@@ -23,11 +23,11 @@ public class Logg {
     private ArrayList<Logg> nyesteLogg = new ArrayList<>(); // er det nødvendig med instansiering her?
 
 
-     public Logg(int nyId, String bruker, String kliIP, String aktivtRom, String nyMelding) {
+     public Logg(int nyId, Date tidspunkt, String bruker, String kliIP, String aktivtRom, String nyMelding) {
          this.id.set(nyId);
-         long millis = System.currentTimeMillis();
-         java.sql.Date testDato = new java.sql.Date(millis);
-         this.tidspunkt = testDato;
+     //    long millis = System.currentTimeMillis();
+      //   java.sql.Date testDato = new java.sql.Date(millis);
+         this.tidspunkt = tidspunkt;
          this.brukernavn = new SimpleStringProperty(bruker);
          this.klientIP = new SimpleStringProperty(kliIP);
          this.rom = new SimpleStringProperty(aktivtRom);
