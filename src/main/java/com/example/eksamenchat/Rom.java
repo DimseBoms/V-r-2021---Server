@@ -1,5 +1,8 @@
 package com.example.eksamenchat;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.util.ArrayList;

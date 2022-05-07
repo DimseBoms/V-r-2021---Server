@@ -68,6 +68,9 @@ public class EksamenChat extends Application {
         new Rom("testRom1", "bruker1");
         new Rom("testRom2", "bruker2");
 
+        new RomNy("testRom2NY1", "NyBruker1");
+        new RomNy("testRomNY2", "NyBruker2");
+
         Adaptor.selectAll();
 
 
@@ -79,18 +82,15 @@ public class EksamenChat extends Application {
     //    System.out.println(Rom.aktiveRom);
 
         VBox root = new VBox();
-        Button button = new Button("Manuell oppfriskning");
-        root.getChildren().addAll(button, romVisning(), loggVisning());
-        button.setOnAction(e -> {
-            Adaptor.insertLogg(testDato,"Tore", "172.10.50.111", "NavnPåRom", "Dette er en lang melding");
-            /*
-            root.getChildren().clear();
-            Adaptor.loggInnføringer.clear();
-            Adaptor.selectAll();
-            root.getChildren().addAll(button, romVisning(), loggVisning());
+        Button nyLogg = new Button("Lag ny logg");
+        Button nyBruker = new Button("Lag ny bruker");
+        Button nyRom = new Button("Lag nytt rom");
+        root.getChildren().addAll(nyLogg, nyBruker, nyRom, romVisning(), loggVisning());
+        nyLogg.setOnAction(e -> Adaptor.insertLogg(testDato,"Tore", "172.10.50.111",
+                "NavnPåRom", "Dette er en lang melding"));
+        nyBruker.setOnAction(e -> new Bruker("ManuellBruker"));
+        nyRom.setOnAction(e -> new RomNy("ManuellRom", "SimulertBruker"));
 
-             */
-        });
 
       //  root.getChildren().add(romVisning());
         Scene scene = new Scene(root, 900, 900);
@@ -104,24 +104,10 @@ public class EksamenChat extends Application {
         return lv;
     }
 
-
-    private HBox romVisning() {
-        HBox liste = new HBox();
-        ObservableList<String> adresser = FXCollections.observableArrayList(Adaptor.loggInnføringer.toString());
-        ListView<String> listView = new ListView<String>(adresser);
-        liste.getChildren().add(listView);
-        return liste;
+    private RomVisning romVisning() {
+        RomVisning rv = new RomVisning();
+        return rv;
     }
-
-    final static String[] ordtak = {
-            "Smuler er også brød",
-            "Bak skyene er himmelen alltid blå",
-            "Nå går de gamle hjem",
-            "Arbeidet adler mannen",
-            "Man får kalde føtter av å gå på tynn is",
-            "Harens veier er uransakelige"};
-
-
 
 }
 
