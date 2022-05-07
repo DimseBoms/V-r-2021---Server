@@ -40,17 +40,19 @@ public class BehandleKlient implements Runnable {
                     System.out.println("Starter lesing av forespørsel");
                     if (input.get("query").equals("sjekkInnBruker")) {
                         System.out.println("sjekkInnBruker = true");
-                        //        ArrayList<String> romliste = new ArrayList<>();
-                        //        romliste.add("Testrom1");
-                        //        romliste.add("Testrom2");
-                        sendAlleRom();
+                        if (!Bruker.sjekkBrukernavnTatt((String) input.get("brukernavn"))) {
+                            sendAlleRom();
+                        } else {
+                            // TODO: Send feilkode/0
+                            System.out.println("Brukernavn tatt");
+                        }
                     }
                     if (input.get("query").equals("opprettRom")) {
                         System.out.println("opprettRom = true");
                         String rom = (String) input.get("rom");
                         String brukernavn = (String) input.get("brukernavn");
                         String ip = socket.getInetAddress().getHostAddress();
-                        new Rom(rom, ip, brukernavn);
+                        //new Rom(rom, ip, brukernavn);
                         System.out.println(Rom.aktiveRom);
                         sendAlleRom();
                     }

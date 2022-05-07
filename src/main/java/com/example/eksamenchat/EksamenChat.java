@@ -65,8 +65,8 @@ public class EksamenChat extends Application {
     //    Adaptor.selectLoggId(666);
    //     Adaptor.selectLoggId(2);
    //     Adaptor.selectLoggId(3);
-        new Rom("testRom1", "ip her", "bruker1");
-        new Rom("testRom2", "ip her", "bruker2");
+        new Rom("testRom1", "bruker1");
+        new Rom("testRom2", "bruker2");
 
         Adaptor.selectAll();
 

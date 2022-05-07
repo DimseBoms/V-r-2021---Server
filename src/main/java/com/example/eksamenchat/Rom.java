@@ -14,17 +14,15 @@ public class Rom {
   //  protected String[] ipAdresse;
     protected static ArrayList<Rom> aktiveRom = new ArrayList<>();
     protected ArrayList<String> meldinger = new ArrayList<>();
-    protected ArrayList<String> ipAdresse = new ArrayList<>();
   //  protected InetAddress[] ipAdresse;
-    protected String brukerNavn;
     static Map<Object, Object> mapOverRom = new HashMap<>();
+    Bruker bruker;
 
-    public Rom(String romNavn, String ip, String brukerNavn) {
+    public Rom(String romNavn, String brukernavn) {
         this.romNavn = romNavn;
-        this.ipAdresse.add(ip);
-        this.brukerNavn = brukerNavn;
-        this.aktiveRom.add(this);
-   //     this.mapOverRom.put("rom", this);
+        this.bruker = new Bruker(brukernavn);
+        aktiveRom.add(this);
+        mapOverRom.put("rom", this);
     }
 
     public void setMelding(String melding) {
@@ -47,6 +45,6 @@ public class Rom {
 
     @Override
     public String toString() {
-        return romNavn + " , " + ipAdresse + "\n";
+        return romNavn + " , " + "\n";
     }
 }
