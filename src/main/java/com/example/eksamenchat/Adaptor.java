@@ -9,6 +9,7 @@ public class Adaptor {
     private static String txtFil = "medlemmer.txt";
     protected static String oppdatertFilnavn = "";
     protected static ArrayList<Logg> loggInnføringer = new ArrayList<>(); // denne burde ligge i class Medlem?
+    protected static ArrayList<String> alleRom = new ArrayList<>(); // denne burde ligge i class Medlem?
     static int sisteId;
 
     private Adaptor() {
@@ -105,6 +106,7 @@ public class Adaptor {
         }
     }
 
+
     protected static void selectAll() {
         try (Connection conn = connect() ) {
             String sql = "select * from Logg;";
@@ -157,6 +159,7 @@ public class Adaptor {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Hjelpemetode for å koble opp mot DB

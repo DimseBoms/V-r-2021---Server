@@ -65,14 +65,18 @@ public class EksamenChat extends Application {
     //    Adaptor.selectLoggId(666);
    //     Adaptor.selectLoggId(2);
    //     Adaptor.selectLoggId(3);
+        new Rom("testRom1", "ip her", "bruker1");
+        new Rom("testRom2", "ip her", "bruker2");
+
         Adaptor.selectAll();
 
-        System.out.println(Adaptor.loggInnføringer);
-        Rom testrom = new Rom("TestRom", "172.10.50.123");
-        Rom testrom2 = new Rom("TestRom2", "172.10.50.123");
-        Rom testrom3 = new Rom("TestRom3", "172.10.50.123");
-        System.out.println(testrom.getAktiveRom().size());
-        System.out.println(Rom.aktiveRom);
+
+    //    System.out.println(Adaptor.loggInnføringer);
+    //    Rom testrom = new Rom("TestRom", "172.10.50.123");
+    //    Rom testrom2 = new Rom("TestRom2", "172.10.50.123");
+    //    Rom testrom3 = new Rom("TestRom3", "172.10.50.123");
+    //    System.out.println(testrom.getAktiveRom().size());
+    //    System.out.println(Rom.aktiveRom);
 
         VBox root = new VBox();
         Button button = new Button("Manuell oppfriskning");

@@ -3,6 +3,8 @@ package com.example.eksamenchat;
 import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class Rom {
@@ -14,11 +16,15 @@ public class Rom {
     protected ArrayList<String> meldinger = new ArrayList<>();
     protected ArrayList<String> ipAdresse = new ArrayList<>();
   //  protected InetAddress[] ipAdresse;
+    protected String brukerNavn;
+    static Map<Object, Object> mapOverRom = new HashMap<>();
 
-    public Rom(String romNavn, String ip) {
+    public Rom(String romNavn, String ip, String brukerNavn) {
         this.romNavn = romNavn;
         this.ipAdresse.add(ip);
+        this.brukerNavn = brukerNavn;
         this.aktiveRom.add(this);
+   //     this.mapOverRom.put("rom", this);
     }
 
     public void setMelding(String melding) {
