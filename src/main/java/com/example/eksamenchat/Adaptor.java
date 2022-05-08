@@ -17,7 +17,6 @@ public class Adaptor {
     static int sisteId;
 
 
-
     /**
      * Metode for å opprette tabell logg (og database, om denne ikke er opprettet)
      */
