@@ -1,19 +1,16 @@
 package com.example.eksamenchat;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.VBox;
 
 import java.util.Date;
 
 public class LoggVisning extends VBox {
 
-    // (int id, Date tidspunkt, String bruker, String klientIP, String romNavn, String melding)
     private final TableView<Logg> TABELL_M = new TableView<>();
     private final TableColumn<Logg, Integer> ID =         new TableColumn<>();
     private final TableColumn<Logg, Date> TID     =             new TableColumn<>();
@@ -21,12 +18,11 @@ public class LoggVisning extends VBox {
     private final TableColumn<Logg, String> KLIENT_IP =           new TableColumn<>();
     private final TableColumn<Logg, String> ROMNAVN =             new TableColumn<>();
     private final TableColumn<Logg, String> MELDING =             new TableColumn<>();
-
-    protected final static ObservableList<Logg> DATA_M = FXCollections.observableArrayList();
+  //  protected final static ObservableList<Logg> DATA_M = FXCollections.observableArrayList();
+    protected final static ObservableList<Logg> DATA_M = Adaptor.LOGG_RADER;
 
 
     public LoggVisning( ) {
-        DATA_M.addAll(Adaptor.loggInnføringer);
         this.setSpacing(5);
         this.setPadding(new Insets(10));
         this.oppfriskTabellMedlem();
@@ -72,9 +68,5 @@ public class LoggVisning extends VBox {
         TABELL_M.getColumns().addAll(ID, TID, BRUKER, KLIENT_IP, ROMNAVN, MELDING);
     } // slutt metode oppfriskTabell
 
-    public void refresh() {
-        DATA_M.clear();
-        DATA_M.addAll(Adaptor.loggInnføringer);
-    }
 
 }

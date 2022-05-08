@@ -40,8 +40,6 @@ public class RomNy {
         rom.set(romnavn);
     }
 
-    public void setTeller() {
-        this.teller++;
-    }
+    public void setTeller() {this.teller++;}
 
 }

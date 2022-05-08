@@ -28,7 +28,7 @@ import java.util.Map;
 public class EksamenChat extends Application {
 
     private static ArrayList<String> outputStreams = new ArrayList<String>();
-
+    private Adaptor adaptor = new Adaptor();
 
     public static void main(String[] args) {
         // Lager initiell servertråd
@@ -51,48 +51,32 @@ public class EksamenChat extends Application {
 
     @Override
     public void start(Stage stage) {
-    //    Adaptor.dropLogg();
-    //    Adaptor.createLogg();
-        long millis = System.currentTimeMillis();
-        java.sql.Date testDato = new java.sql.Date(millis);
+  //     Adaptor.dropLogg();
+  //     Adaptor.createLogg();
 
-        //  Logg(String bruker, String kliIP, Rom aktivtRom, String nyMelding)
-    //    Logg testLogg = new Logg(1, "Tore", "172.10.50.111", "NavnPåRom", "Dette er en lang melding");
-  //      Adaptor.insertLogg(1, testDato, "Tore", "172.10.50.111", null, null);
- //       Adaptor.insertLogg(2, testDato, "Tore", "172.10.50.111", "NavnPåRom", null);
-
-
-    //    Adaptor.selectLoggId(666);
-   //     Adaptor.selectLoggId(2);
-   //     Adaptor.selectLoggId(3);
         new Rom("testRom1", "bruker1");
         new Rom("testRom2", "bruker2");
 
         new RomNy("testRom2NY1", "NyBruker1");
         new RomNy("testRomNY2", "NyBruker2");
 
-        Adaptor.selectAll();
-
-
-    //    System.out.println(Adaptor.loggInnføringer);
-    //    Rom testrom = new Rom("TestRom", "172.10.50.123");
-    //    Rom testrom2 = new Rom("TestRom2", "172.10.50.123");
-    //    Rom testrom3 = new Rom("TestRom3", "172.10.50.123");
-    //    System.out.println(testrom.getAktiveRom().size());
-    //    System.out.println(Rom.aktiveRom);
+        Adaptor.selectNyeste();
 
         VBox root = new VBox();
         Button nyLogg = new Button("Lag ny logg");
         Button nyBruker = new Button("Lag ny bruker");
         Button nyRom = new Button("Lag nytt rom");
         root.getChildren().addAll(nyLogg, nyBruker, nyRom, romVisning(), loggVisning());
-        nyLogg.setOnAction(e -> Adaptor.insertLogg(testDato,"Tore", "172.10.50.111",
-                "NavnPåRom", "Dette er en lang melding"));
+        nyLogg.setOnAction(e -> {
+                    long millis = System.currentTimeMillis();
+                    java.sql.Date testDato = new java.sql.Date(millis);
+                    adaptor.insertLogg(testDato,"Tore", "172.10.50.111",
+                            "NavnPåRom", "Dette er en lang melding");
+                });
+  //      nyLogg.setOnAction(e -> new Logg (1, "NavnPåRom", "Dette er en lang melding"));
         nyBruker.setOnAction(e -> new Bruker("ManuellBruker"));
         nyRom.setOnAction(e -> new RomNy("ManuellRom", "SimulertBruker"));
 
-
-      //  root.getChildren().add(romVisning());
         Scene scene = new Scene(root, 900, 900);
         stage.setTitle("Hello!");
         stage.setScene(scene);
