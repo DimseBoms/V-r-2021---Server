@@ -1,5 +1,7 @@
 package com.example.eksamenchat;
 
+import javafx.collections.ObservableList;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -52,14 +54,16 @@ public class BehandleKlient implements Runnable {
                         String brukernavn = (String) input.get("brukernavn");
                         String ip = socket.getInetAddress().getHostAddress();
                         //new Rom(rom, ip, brukernavn);
-                        System.out.println(Rom.aktiveRom);
+                        new RomNy(rom, brukernavn);
+        //                System.out.println(Rom.aktiveRom);
                         sendAlleRom();
                     }
                     if (input.get("query").equals("hentRom")) {
                         System.out.println("Starter behandling av hentRom");
                         String ip = socket.getInetAddress().getHostAddress();
                         //new Rom(rom, ip, brukernavn);
-                        System.out.println(Rom.aktiveRom);
+        //                new RomNy("hentRom", "hentRomBruker");
+        //                System.out.println(Rom.aktiveRom);
                         sendAlleRom();
                     }
                 } catch (SocketException e) {
@@ -116,10 +120,11 @@ public class BehandleKlient implements Runnable {
     }
 
     public void sendAlleRom() {
-        List romliste2 = romNavn(Rom.aktiveRom);
+    //    List romliste2 = romNavn(Rom.aktiveRom);
+        List romliste3 = romNavn2(RomNy.DATA_M);
         Map<Object, Object> svar = new HashMap<>();
         svar.put("status", 1);
-        svar.put("romliste", romliste2);
+        svar.put("romliste", romliste3);
         try {
             utStrøm.writeObject(svar);
         } catch (IOException e) {
@@ -132,6 +137,14 @@ public class BehandleKlient implements Runnable {
         ArrayList<String> navn = new ArrayList<>();
         for (Rom rom1 : rom) {
             navn.add(rom1.getRomNavn());
+        }
+        return navn;
+    }
+
+    public ArrayList<String> romNavn2(ObservableList<RomNy> rom) {
+        ArrayList<String> navn = new ArrayList<>();
+        for (RomNy rom1 : rom) {
+            navn.add(rom1.getRom());
         }
         return navn;
     }
