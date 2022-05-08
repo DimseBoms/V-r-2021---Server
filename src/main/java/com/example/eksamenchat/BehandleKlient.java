@@ -35,7 +35,7 @@ public class BehandleKlient implements Runnable {
             innStrøm = new ObjectInputStream(socket.getInputStream());
             utStrøm = new ObjectOutputStream(socket.getOutputStream());
             // Sjekker type forespørsel
-            while (socket.isConnected()) {
+            while (!socket.isClosed()) {
                 try {
                     Map input = (Map) innStrøm.readObject();
                     System.out.println(input);
@@ -66,14 +66,11 @@ public class BehandleKlient implements Runnable {
         //                System.out.println(Rom.aktiveRom);
                         sendAlleRom();
                     }
-                } catch (SocketException e) {
+                } catch (IOException e) {
+                    System.out.println("Klient koblet fra");
                     socket.close();
                     innStrøm.close();
                     break;
-                } catch (IOException | ClassNotFoundException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-
                     // Leser initiell input når bruker logges inn.
                     //Map input = (Map) innStrøm.readObject();
                     //if (input != null) {
@@ -92,6 +89,9 @@ public class BehandleKlient implements Runnable {
 
                     //    Adaptor.insertLogg(tid,navn, ip, rom, melding);
 
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
                 //ArrayList<String> romliste = new ArrayList<>();
@@ -107,7 +107,6 @@ public class BehandleKlient implements Runnable {
                 //  System.out.println();
             }
     }
-
     private void sendBrukerFeil() {
         Map<Object, Object> svar = new HashMap<>();
         svar.put("status", 0);

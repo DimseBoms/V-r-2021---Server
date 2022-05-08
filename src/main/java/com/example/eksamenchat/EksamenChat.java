@@ -26,16 +26,15 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class EksamenChat extends Application {
-
     private static ArrayList<String> outputStreams = new ArrayList<String>();
     private Adaptor adaptor = new Adaptor();
-
+    private static ServerSocket server;
     public static void main(String[] args) {
         // Lager initiell servertråd
         new Thread(() -> {
             try {
-                ServerSocket server = new ServerSocket(8000);
-                while (true) {
+                server = new ServerSocket(8000);
+                while (!server.isClosed()) {
                     Socket socket = server.accept();
                     // Lager ny tråd for ny tilkobling
                     new Thread(new BehandleKlient(socket)).start();
@@ -47,8 +46,6 @@ public class EksamenChat extends Application {
         }).start();
         launch(args);
     }
-
-
     @Override
     public void start(Stage stage) {
   //     Adaptor.dropLogg();
@@ -82,7 +79,16 @@ public class EksamenChat extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
+    // O
+    @Override
+    public void stop(){
+        System.out.println("Lukker intern server");
+        try {
+            server.close();
+        } catch (IOException e) {
+            System.out.println("Feilmelding ved lukking av server: " + e.getMessage());
+        }
+    }
     private LoggVisning loggVisning() {
         LoggVisning lv = new LoggVisning();
         return lv;
