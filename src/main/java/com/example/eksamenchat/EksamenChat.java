@@ -74,7 +74,7 @@ public class EksamenChat extends Application {
                             "NavnPåRom", "Dette er en lang melding");
                 });
   //      nyLogg.setOnAction(e -> new Logg (1, "NavnPåRom", "Dette er en lang melding"));
-        nyBruker.setOnAction(e -> new Bruker("ManuellBruker"));
+        nyBruker.setOnAction(e -> new Bruker("Dmitriy"));
         nyRom.setOnAction(e -> new RomNy("ManuellRom", "SimulertBruker"));
 
         Scene scene = new Scene(root, 900, 900);

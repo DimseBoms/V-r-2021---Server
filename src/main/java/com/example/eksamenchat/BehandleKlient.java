@@ -39,18 +39,24 @@ public class BehandleKlient implements Runnable {
                     System.out.println(input);
                     System.out.println("Starter lesing av forespørsel");
                     if (input.get("query").equals("sjekkInnBruker")) {
-                        System.out.println("sjekkInnBruker = true");
+                        System.out.println("sjekkInnBruker: " + input.get("brukernavn"));
                         if (!Bruker.sjekkBrukernavnTatt((String) input.get("brukernavn"))) {
                             sendAlleRom();
                         } else {
-                            // TODO: Send feilkode/0
-                            System.out.println("Brukernavn tatt");
+                            sendBrukerFeil();
                         }
                     }
                     if (input.get("query").equals("opprettRom")) {
                         System.out.println("opprettRom = true");
                         String rom = (String) input.get("rom");
                         String brukernavn = (String) input.get("brukernavn");
+                        String ip = socket.getInetAddress().getHostAddress();
+                        //new Rom(rom, ip, brukernavn);
+                        System.out.println(Rom.aktiveRom);
+                        sendAlleRom();
+                    }
+                    if (input.get("query").equals("hentRom")) {
+                        System.out.println("Starter behandling av hentRom");
                         String ip = socket.getInetAddress().getHostAddress();
                         //new Rom(rom, ip, brukernavn);
                         System.out.println(Rom.aktiveRom);
@@ -98,11 +104,22 @@ public class BehandleKlient implements Runnable {
             }
     }
 
+    private void sendBrukerFeil() {
+        Map<Object, Object> svar = new HashMap<>();
+        svar.put("status", 0);
+        svar.put("melding", "Brukernavn ikke ledig");
+        try {
+            utStrøm.writeObject(svar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendAlleRom() {
-            List romliste2 = romNavn(Rom.aktiveRom);
-            Map<Object, Object> svar = new HashMap<>();
-            svar.put("status", 1);
-            svar.put("romliste", romliste2);
+        List romliste2 = romNavn(Rom.aktiveRom);
+        Map<Object, Object> svar = new HashMap<>();
+        svar.put("status", 1);
+        svar.put("romliste", romliste2);
         try {
             utStrøm.writeObject(svar);
         } catch (IOException e) {
