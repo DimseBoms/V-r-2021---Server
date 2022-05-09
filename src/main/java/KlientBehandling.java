@@ -32,8 +32,9 @@ public class KlientBehandling implements Runnable {
                 HashMap<Object, Object> forespørselMap = (HashMap<Object, Object>) innStrøm.readObject();
                 if (forespørselMap.get("query").equals("loggInn")) {
                     System.out.println("Nytt innloggingsforsøk på " + forespørselMap);
-                    if (sjekkBruker()) loggInnSuksess();
-                    else loggInnFeil();
+                    if (sjekkBruker()){
+                        loggInnSuksess();
+                    } else loggInnFeil();
                 }
             } catch (IOException e) {
                 // Forsøker å lukke tilkobling
