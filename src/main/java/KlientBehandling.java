@@ -7,6 +7,7 @@ public class KlientBehandling implements Runnable {
     private ObjectInputStream innStrøm;
     private ObjectOutputStream utStrøm;
     protected DBAdaptor dbAdaptor = new DBAdaptor();
+    private Bruker bruker;
 
     // Håndterer klient basert på Socket objektet som blir innsendt
     public KlientBehandling(Socket socket) throws IOException {
@@ -49,7 +50,6 @@ public class KlientBehandling implements Runnable {
     }
 
     private void loggInnFeil() {
-        System.out.print("Deler av innloggingsinformasjonen eksisterer allerede i databasen. Bruker logges ikke inn");
         HashMap<Object, Object> svar = new HashMap<>();
         svar.put("feilkode", -1);
         svar.put("melding", "Feil ved autentisering. Telefonnummer eller epost er allerede i bruk");
@@ -64,7 +64,14 @@ public class KlientBehandling implements Runnable {
         }
     }
 
-    private void loggInnSuksess(String melding) {
+    private void loggInnSuksess(String melding, HashMap<Object, Object> map) {
+        // Oppretter ny bruker og legger den inn som en instansvariabel i tilkobling
+        this.bruker = new Bruker(
+                (String) map.get("fornavn"),
+                (String) map.get("etternavn"),
+                (String) map.get("tlf"),
+                (String) map.get("epost")
+        );
         HashMap<Object, Object> svar = new HashMap<>();
         svar.put("feilkode", 0);
         svar.put("melding", melding);
@@ -80,12 +87,11 @@ public class KlientBehandling implements Runnable {
     }
 
     private void lagBruker(HashMap map) {
-        System.out.println("Innloggingsinformasjon eksisterer ikke i databasen. Det lages en ny bruker som logges inn");
         // Lager ny brukerkonto og setter den inn i databasen.
         dbAdaptor.insertBruker((String) map.get("fornavn"), (String) map.get("etternavn"),
                 (String) map.get("tlf"), (String) map.get("epost"));
         // Varsler bruker om at det har blitt laget en ny brukerkonto som følge av innlogging
-        loggInnSuksess("Laget ny bruker. Velkommen " + map.get("fornavn") + "!");
+        loggInnSuksess("Laget ny bruker. Velkommen " + map.get("fornavn") + "!", map);
     }
 
     // For å logge inn skal det være en fullstendig match mellom epost og tlf. Dersom enten epost eller tlf
@@ -101,8 +107,7 @@ public class KlientBehandling implements Runnable {
             // Sjekker samsvar mellom tlf og epost
             if (dbAdaptor.sjekkSamsvar(innEpost, innTlf)) {
                 // Det er samsvar mellom epost og tlf
-                System.out.println("Samsvar i brukerinformasjon, bruker logges inn.");
-                loggInnSuksess("Bruker logget inn");
+                loggInnSuksess("Bruker logget inn", map);
             } else {
                 // Den ene eller andre eksisterer men det er ikke samsvar
                 loggInnFeil();
