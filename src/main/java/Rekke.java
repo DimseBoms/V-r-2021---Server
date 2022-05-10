@@ -4,9 +4,6 @@ import java.util.Collections;
 public class Rekke   {
     public ArrayList<Integer> tallRekke;
     public int rekkePris;
-
-
-
     protected double gevinst;
 
 
