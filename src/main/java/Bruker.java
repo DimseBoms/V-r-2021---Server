@@ -2,7 +2,7 @@
 import java.util.ArrayList;
 
 public class Bruker {
-    public ArrayList<Rekke> rekkeListe = new ArrayList<>();
+    public  ArrayList<Rekke> rekkeListe;
     private String fornavn;
     private String etternavn;
     private String telefonnummer;
@@ -14,6 +14,7 @@ public class Bruker {
         this.etternavn = etternavn;
         this.telefonnummer = telefonnummer;
         this.epost = epost;
+        rekkeListe= new ArrayList<>();
         brukere.add(this);
     }
 

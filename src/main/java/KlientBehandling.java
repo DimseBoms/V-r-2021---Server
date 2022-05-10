@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KlientBehandling implements Runnable {
@@ -8,6 +9,7 @@ public class KlientBehandling implements Runnable {
     private ObjectOutputStream utStrøm;
     protected DBAdaptor dbAdaptor = new DBAdaptor();
     private Bruker bruker;
+    protected GevinstBeregning gevinstBeregning;
 
     // Håndterer klient basert på Socket objektet som blir innsendt
     public KlientBehandling(Socket socket) throws IOException {
@@ -30,13 +32,17 @@ public class KlientBehandling implements Runnable {
                 // Leser hva slags type forespørsel og bestemmer hva slags svar som skal konstrueres
                 // TODO: Fyll inn logikk her
                 HashMap<Object, Object> forespørselMap = (HashMap<Object, Object>) innStrøm.readObject();
+
                 if (forespørselMap.get("query").equals("loggInn")) {
                     System.out.println("Nytt innloggingsforsøk på " + forespørselMap);
                     sjekkBruker(forespørselMap);
                 }
 
-                if(forespørselMap.get("query").equals("sjekkRekke")){
-                    System.out.println("sender rekke");
+                if(forespørselMap.get("query").equals("sendRekke")) {
+                    System.out.println("henter rekker, ser om bruker har vunnet, or regner ut gevinst");
+                    lagRekke(forespørselMap);
+                    gevinstBeregning = new GevinstBeregning();
+                    //   gevinstBeregning.beregnGevinst(lagVinnerTabell(), (Bruker)forespørselMap.get("rekker"));
                 }
 
             } catch (IOException e) {
@@ -47,6 +53,30 @@ public class KlientBehandling implements Runnable {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public ArrayList<Integer> lagVinnerTabell(){
+        ArrayList<Integer>vinnerTabell = new ArrayList<>();
+        int max = 34;
+        int min = 1;
+        int range = max - min + 1;
+
+        for(int i=0; i<6; i++){
+            int rand = (int)(Math.random() * range) + min;
+            vinnerTabell.add(rand);
+        }
+
+        return vinnerTabell;
+    }
+
+    public void lagRekke(HashMap map){
+        int i = (int)map.get("rekker");
+        for(int j =0; j<i; i++){
+            new Rekke((ArrayList<Integer>) map.get("rekker"),(int)map.get("innsats"), bruker);
+        }
+        gevinstBeregning = new GevinstBeregning();
+        gevinstBeregning.beregnGevinst(lagVinnerTabell(), bruker);
+
     }
 
     private void loggInnFeil() {
