@@ -32,14 +32,14 @@ public class KlientBehandling implements Runnable {
                 // Leser hva slags type forespørsel og bestemmer hva slags svar som skal konstrueres
                 // TODO: Fyll inn logikk her
                 HashMap<Object, Object> forespørselMap = (HashMap<Object, Object>) innStrøm.readObject();
-
+                // Håndtering av innlogging
                 if (forespørselMap.get("query").equals("loggInn")) {
                     System.out.println("Nytt innloggingsforsøk på " + forespørselMap);
                     sjekkBruker(forespørselMap);
                 }
-
+                // Håndtering av overføring av rekker
                 if(forespørselMap.get("query").equals("sendRekke")) {
-                    System.out.println("henter rekker, ser om bruker har vunnet, or regner ut gevinst");
+                    System.out.println(forespørselMap);
                     lagRekke(forespørselMap);
                     gevinstBeregning = new GevinstBeregning();
                     //   gevinstBeregning.beregnGevinst(lagVinnerTabell(), (Bruker)forespørselMap.get("rekker"));
@@ -76,7 +76,6 @@ public class KlientBehandling implements Runnable {
         }
         gevinstBeregning = new GevinstBeregning();
         gevinstBeregning.beregnGevinst(lagVinnerTabell(), bruker);
-
     }
 
     private void loggInnFeil() {
