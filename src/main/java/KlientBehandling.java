@@ -1,7 +1,5 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class KlientBehandling implements Runnable {
@@ -33,9 +31,7 @@ public class KlientBehandling implements Runnable {
                 HashMap<Object, Object> forespørselMap = (HashMap<Object, Object>) innStrøm.readObject();
                 if (forespørselMap.get("query").equals("loggInn")) {
                     System.out.println("Nytt innloggingsforsøk på " + forespørselMap);
-                    if (sjekkBruker(forespørselMap)){
-                        loggInnSuksess();
-                    } else loggInnFeil();
+                    sjekkBruker(forespørselMap);
                 }
 
                 if(forespørselMap.get("query").equals("sjekkRekke")){
@@ -52,35 +48,66 @@ public class KlientBehandling implements Runnable {
         }
     }
 
-    private void loggInnFeil() throws IOException {
+    private void loggInnFeil() {
         HashMap<Object, Object> svar = new HashMap<>();
-        svar.put("suksess", 0);
+        svar.put("feilkode", -1);
         svar.put("melding", "Feil ved autentisering. Telefonnummer eller epost er allerede i bruk");
         try {
             utStrøm.writeObject(svar);
         } catch (IOException e) {
-            utStrøm.close();
+            try {
+                utStrøm.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
-    private void loggInnSuksess() throws IOException {
+    private void loggInnSuksess(String melding) {
         HashMap<Object, Object> svar = new HashMap<>();
-        svar.put("suksess", 1);
-        svar.put("melding", "Bruker logget inn");
+        svar.put("feilkode", 0);
+        svar.put("melding", melding);
         try {
             utStrøm.writeObject(svar);
         } catch (IOException e) {
-            utStrøm.close();
+            try {
+                utStrøm.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
-    private boolean sjekkBruker(HashMap map) {
-        // TODO: Ta i bruk sjekk fra DBAdaptor
-        dbAdaptor.selectTelefonnummer(map.get("tlf").toString());
+    private void lagBruker(HashMap map) {
+        // Lager ny brukerkonto og setter den inn i databasen.
+        dbAdaptor.insertBruker((String) map.get("fornavn"), (String) map.get("etternavn"),
+                (String) map.get("tlf"), (String) map.get("epost"));
+        // Varsler bruker om at det har blitt laget en ny brukerkonto som følge av innlogging
+        loggInnSuksess("Laget ny bruker. Velkommen " + map.get("fornavn") + "!");
+    }
+
+    // For å logge inn skal det være en fullstendig match mellom epost og tlf. Dersom enten epost eller tlf
+    // er tatt i bruk fra før så må det være en match mellom disse for suksessfull innlogging.
+    private void sjekkBruker(HashMap map) {
+        // Leser inn verdier fra map
+        String innEpost = (String) map.get("epost");
+        String innTlf = (String) map.get("tlf");
+        // Teller antall/sjekker om verdien allerede eksisterer i databasen
         dbAdaptor.selectEpost(map.get("epost").toString());
-
-        return dbAdaptor.isNrEksisterer() && dbAdaptor.isePostEksisterer();
-
+        dbAdaptor.selectTelefonnummer(map.get("tlf").toString());
+        if (dbAdaptor.isEpostEksisterer() || dbAdaptor.isNrEksisterer()) {
+            // Sjekker samsvar mellom tlf og epost via epost
+            if (dbAdaptor.sjekkSamsvar(innEpost, innTlf)) {
+                // Det er samsvar mellom epost og tlf
+                loggInnSuksess("Bruker logget inn");
+            } else {
+                // Den ene eller andre eksisterer men det er ikke samsvar
+                loggInnFeil();
+            }
+        } else {
+            // Hverken epost eller tlf eksisterer
+            lagBruker(map);
+        }
     }
 
     // Hjelpemetode for å lukke alle strømmene

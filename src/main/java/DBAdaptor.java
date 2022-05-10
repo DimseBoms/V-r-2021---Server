@@ -1,5 +1,4 @@
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
 
 public class DBAdaptor {
@@ -17,6 +16,8 @@ public class DBAdaptor {
     public DBAdaptor() {
         this.nrEksisterer = false;
         this.ePostEksisterer = false;
+        this.createBruker();
+        this.createLottorekke();
     }
 
     /**
@@ -156,6 +157,26 @@ public class DBAdaptor {
         } finally {
             disConnect();
         }
+    }
+
+    protected boolean sjekkSamsvar(String epost, String tlf) {
+        try (Connection conn = connect() ) {
+            String sql = "select COUNT(*) from Bruker WHERE Epost = ? AND Telefon = ?;";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, epost);
+            pstmt.setString(2, tlf);
+            ResultSet rs = pstmt.executeQuery();
+            int count = rs.getInt(1);
+            System.out.println("Resultat fra sjekkSamsvar: " + count);
+            return count > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            disConnect();
+        }
+        return false;
     }
 
     private void lagreBrukere(ResultSet rs) {
@@ -337,7 +358,7 @@ public class DBAdaptor {
         return nrEksisterer;
     }
 
-    public  boolean isePostEksisterer() {
+    public  boolean isEpostEksisterer() {
         return ePostEksisterer;
     }
 

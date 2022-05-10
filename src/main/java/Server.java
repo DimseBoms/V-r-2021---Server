@@ -10,6 +10,7 @@ public class Server {
 
     // Setter i gang behandlingen av en ny klient ved å initialisere en ny tråd med KlientBehandling
     public void startServer() {
+        System.out.println("Startet server");
         try {
             while (!serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
