@@ -8,6 +8,7 @@ public class KlientBehandling implements Runnable {
     private Socket socket;
     private ObjectInputStream innStrøm;
     private ObjectOutputStream utStrøm;
+    protected DBAdaptor dbAdaptor = new DBAdaptor();
 
     // Håndterer klient basert på Socket objektet som blir innsendt
     public KlientBehandling(Socket socket) throws IOException {
@@ -32,10 +33,15 @@ public class KlientBehandling implements Runnable {
                 HashMap<Object, Object> forespørselMap = (HashMap<Object, Object>) innStrøm.readObject();
                 if (forespørselMap.get("query").equals("loggInn")) {
                     System.out.println("Nytt innloggingsforsøk på " + forespørselMap);
-                    if (sjekkBruker()){
+                    if (sjekkBruker(forespørselMap)){
                         loggInnSuksess();
                     } else loggInnFeil();
                 }
+
+                if(forespørselMap.get("query").equals("sjekkRekke")){
+                    System.out.println("sender rekke");
+                }
+
             } catch (IOException e) {
                 // Forsøker å lukke tilkobling
                 closeEverything(socket, innStrøm, utStrøm);
@@ -48,8 +54,8 @@ public class KlientBehandling implements Runnable {
 
     private void loggInnFeil() throws IOException {
         HashMap<Object, Object> svar = new HashMap<>();
-        svar.put("feilkode", -1);
-        svar.put("melding", "Feil ved autentisering. Brukernavn eller passord er feil");
+        svar.put("suksess", 0);
+        svar.put("melding", "Feil ved autentisering. Telefonnummer eller epost er allerede i bruk");
         try {
             utStrøm.writeObject(svar);
         } catch (IOException e) {
@@ -59,7 +65,7 @@ public class KlientBehandling implements Runnable {
 
     private void loggInnSuksess() throws IOException {
         HashMap<Object, Object> svar = new HashMap<>();
-        svar.put("feilkode", 0);
+        svar.put("suksess", 1);
         svar.put("melding", "Bruker logget inn");
         try {
             utStrøm.writeObject(svar);
@@ -68,9 +74,13 @@ public class KlientBehandling implements Runnable {
         }
     }
 
-    private boolean sjekkBruker() {
+    private boolean sjekkBruker(HashMap map) {
         // TODO: Ta i bruk sjekk fra DBAdaptor
-        return true;
+        dbAdaptor.selectTelefonnummer(map.get("tlf").toString());
+        dbAdaptor.selectEpost(map.get("epost").toString());
+
+        return dbAdaptor.isNrEksisterer() && dbAdaptor.isePostEksisterer();
+
     }
 
     // Hjelpemetode for å lukke alle strømmene

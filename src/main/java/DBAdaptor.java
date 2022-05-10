@@ -10,9 +10,13 @@ public class DBAdaptor {
     private ArrayList<String> rekker = new ArrayList<>();
     private int sisteId;
     private String telefonnummerFunnet;
+    private   boolean nrEksisterer;
+    private boolean ePostEksisterer;
+
 
     public DBAdaptor() {
-
+        this.nrEksisterer = false;
+        this.ePostEksisterer = false;
     }
 
     /**
@@ -116,6 +120,9 @@ public class DBAdaptor {
             pstmt.setString(1, tlf);
             ResultSet rs = pstmt.executeQuery();
             int count = rs.getInt(1);
+            if(count>0) {
+                this.nrEksisterer = true;
+            }
             System.out.println("COUNT TLF FRA DB " + count);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -138,6 +145,9 @@ public class DBAdaptor {
             pstmt.setString(1, epost);
             ResultSet rs = pstmt.executeQuery();
             int count = rs.getInt(1);
+            if(count> 0){
+                this.ePostEksisterer=true;
+            }
             System.out.println("COUNT EPOST FRA DB " + count);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -322,5 +332,13 @@ public class DBAdaptor {
     private int getSisteId() {return this.sisteId;}
 
     private String getTelefonnummerFunnet() {return this.telefonnummerFunnet;}
+
+    public  boolean isNrEksisterer() {
+        return nrEksisterer;
+    }
+
+    public  boolean isePostEksisterer() {
+        return ePostEksisterer;
+    }
 
 }
