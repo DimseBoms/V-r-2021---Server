@@ -124,7 +124,6 @@ public class DBAdaptor {
             if(count>0) {
                 this.nrEksisterer = true;
             }
-            System.out.println("COUNT TLF FRA DB " + count);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
@@ -149,7 +148,6 @@ public class DBAdaptor {
             if(count> 0){
                 this.ePostEksisterer=true;
             }
-            System.out.println("COUNT EPOST FRA DB " + count);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
@@ -167,7 +165,6 @@ public class DBAdaptor {
             pstmt.setString(2, tlf);
             ResultSet rs = pstmt.executeQuery();
             int count = rs.getInt(1);
-            System.out.println("Resultat fra sjekkSamsvar: " + count);
             return count > 0;
         } catch (SQLException e) {
             System.out.println(e.getMessage());

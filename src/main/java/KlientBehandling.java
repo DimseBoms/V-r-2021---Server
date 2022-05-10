@@ -49,6 +49,7 @@ public class KlientBehandling implements Runnable {
     }
 
     private void loggInnFeil() {
+        System.out.print("Deler av innloggingsinformasjonen eksisterer allerede i databasen. Bruker logges ikke inn");
         HashMap<Object, Object> svar = new HashMap<>();
         svar.put("feilkode", -1);
         svar.put("melding", "Feil ved autentisering. Telefonnummer eller epost er allerede i bruk");
@@ -79,6 +80,7 @@ public class KlientBehandling implements Runnable {
     }
 
     private void lagBruker(HashMap map) {
+        System.out.println("Innloggingsinformasjon eksisterer ikke i databasen. Det lages en ny bruker som logges inn");
         // Lager ny brukerkonto og setter den inn i databasen.
         dbAdaptor.insertBruker((String) map.get("fornavn"), (String) map.get("etternavn"),
                 (String) map.get("tlf"), (String) map.get("epost"));
@@ -92,13 +94,14 @@ public class KlientBehandling implements Runnable {
         // Leser inn verdier fra map
         String innEpost = (String) map.get("epost");
         String innTlf = (String) map.get("tlf");
-        // Teller antall/sjekker om verdien allerede eksisterer i databasen
+        // Teller antall og sjekker om verdien allerede eksisterer i databasen
         dbAdaptor.selectEpost(map.get("epost").toString());
         dbAdaptor.selectTelefonnummer(map.get("tlf").toString());
         if (dbAdaptor.isEpostEksisterer() || dbAdaptor.isNrEksisterer()) {
-            // Sjekker samsvar mellom tlf og epost via epost
+            // Sjekker samsvar mellom tlf og epost
             if (dbAdaptor.sjekkSamsvar(innEpost, innTlf)) {
                 // Det er samsvar mellom epost og tlf
+                System.out.println("Samsvar i brukerinformasjon, bruker logges inn.");
                 loggInnSuksess("Bruker logget inn");
             } else {
                 // Den ene eller andre eksisterer men det er ikke samsvar
