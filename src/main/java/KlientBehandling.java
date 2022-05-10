@@ -48,7 +48,7 @@ public class KlientBehandling implements Runnable {
 
     private void loggInnFeil() throws IOException {
         HashMap<Object, Object> svar = new HashMap<>();
-        svar.put("suksess", 0);
+        svar.put("feilkode", -1);
         svar.put("melding", "Feil ved autentisering. Brukernavn eller passord er feil");
         try {
             utStrøm.writeObject(svar);
@@ -59,7 +59,7 @@ public class KlientBehandling implements Runnable {
 
     private void loggInnSuksess() throws IOException {
         HashMap<Object, Object> svar = new HashMap<>();
-        svar.put("suksess", 1);
+        svar.put("feilkode", 0);
         svar.put("melding", "Bruker logget inn");
         try {
             utStrøm.writeObject(svar);

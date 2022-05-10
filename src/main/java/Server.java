@@ -8,7 +8,7 @@ public class Server {
         this.serverSocket = serverSocket;
     }
 
-    // Setter i gang behandlingen av en ny klient og initialiserer en ny tråd med KlientBehandling
+    // Setter i gang behandlingen av en ny klient ved å initialisere en ny tråd med KlientBehandling
     public void startServer() {
         try {
             while (!serverSocket.isClosed()) {
