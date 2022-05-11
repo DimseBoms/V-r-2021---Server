@@ -29,22 +29,6 @@ public class Bruker {
 
     private static ArrayList<Bruker> brukere = new ArrayList<>();
 
-    public String getFornavn() {
-        return fornavn;
-    }
-
-    public String getEtternavn() {
-        return etternavn;
-    }
-
-    public String getTelefonnummer() {
-        return telefonnummer;
-    }
-
-    public String getEpost() {
-        return epost;
-    }
-
     public Bruker(String fornavn, String etternavn, String telefonnummer, String epost) {
         this.fornavn = fornavn;
         this.etternavn = etternavn;
