@@ -115,7 +115,7 @@ public class KlientBehandling implements Runnable {
 
         System.out.println("sender rekker til db");
         long millis = System.currentTimeMillis();
-        java.sql.Timestamp tid = new java.sql.Timestamp(millis);
+        Timestamp tid = new Timestamp(millis);
         dbAdaptor.createLottorekke();
         for(Rekke r: bruker.rekkeListe) {
                 dbAdaptor.insertLottorekke(dbAdaptor.selectBrukerId(bruker.getEpost(), bruker.getTelefonnummer()), tid, r.getAntallRette() ,r.tallRekke.get(0),
