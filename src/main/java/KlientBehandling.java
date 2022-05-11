@@ -70,12 +70,32 @@ public class KlientBehandling implements Runnable {
     }
 
     public void lagRekke(HashMap map){
-        int i = (int)map.get("rekker");
-        for(int j =0; j<i; i++){
-            new Rekke((ArrayList<Integer>) map.get("rekker"),(int)map.get("innsats"), bruker);
+        ArrayList<ArrayList<Integer>> rekkeListe = (ArrayList<ArrayList<Integer>>)map.get("rekker");
+        ArrayList<Integer> innsatsListe = (ArrayList<Integer>)map.get("innsats");
+
+        for(int i =0; i<((ArrayList<?>) map.get("rekker")).size(); i++){
+            new Rekke(rekkeListe.get(i),innsatsListe.get(i), bruker);
+
+            System.out.println(rekkeListe.get(i));
+            System.out.println(innsatsListe.get(i));
         }
+
         gevinstBeregning = new GevinstBeregning();
         gevinstBeregning.beregnGevinst(lagVinnerTabell(), bruker);
+        insertRekker(bruker);
+    }
+
+    public void insertRekker(Bruker bruker){
+
+        long millis = System.currentTimeMillis();
+        java.sql.Timestamp tid = new java.sql.Timestamp(millis);
+        dbAdaptor.createLottorekke();
+        for(Rekke r: bruker.rekkeListe) {
+            dbAdaptor.insertLottorekke(dbAdaptor.selectBrukerId(bruker.getEpost(), bruker.getTelefonnummer()), tid, r.getAntallRette() ,r.tallRekke.get(1),
+                    r.tallRekke.get(2), r.tallRekke.get(3), r.tallRekke.get(4), r.tallRekke.get(5), r.tallRekke.get(6), r.tallRekke.get(7)
+            );
+            System.out.println("sender rekker til db");
+        }
     }
 
     private void loggInnFeil() {

@@ -24,18 +24,25 @@ public class GevinstBeregning {
                 }
             }
             if (teller == 5) {
-                gevinst = r.rekkePris * 0.15 * 730;
+                gevinst += r.rekkePris * 0.15 * 730;
+                r.setGevinst(r.rekkePris * 0.15 * 30000  );
             }
             else if  (teller == 6) {
-                gevinst = r.rekkePris * 0.15 * 30000;
+                gevinst += r.rekkePris * 0.15 * 30000;
+                r.setGevinst(r.rekkePris* 0.15 * 30000);
             }
 
             else if (r.tallRekke.equals(vinnerRekke)) {
-                gevinst = r.rekkePris * 0.2 * 5400000;
+                gevinst += r.rekkePris * 0.2 * 5400000;
+                r.setGevinst(r.rekkePris * 0.2 * 5400000);
             }
+
             teller=0;
             r.setGevinst(gevinst);
-
+            //send array med vinnerrrekke
+            //send antall rette rekker
+            //send gevinst per rekke
+            r.setAntallRette(teller);
         }
 
 

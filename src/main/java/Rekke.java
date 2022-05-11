@@ -4,8 +4,18 @@ import java.util.Collections;
 public class Rekke   {
     public ArrayList<Integer> tallRekke;
     public int rekkePris;
+
+    public int getAntallRette() {
+        return antallRette;
+    }
+
     protected double gevinst;
 
+    public void setAntallRette(int antallRette) {
+        this.antallRette = antallRette;
+    }
+
+    protected int antallRette;
 
     public Rekke(ArrayList<Integer>rekkeMedTall, int rekkePris, Bruker bruker) {
 
@@ -15,7 +25,6 @@ public class Rekke   {
 
         bruker.rekkeListe.add(this);
     }
-
 
 
 
