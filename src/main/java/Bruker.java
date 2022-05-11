@@ -58,6 +58,15 @@ public class Bruker {
         }
         return gevinstTab;
     }
+    public ArrayList<?> hentVinnerInnsats(){
+        ArrayList<Integer> innsatsListe = new ArrayList<>();
+        for(Rekke r: this.rekkeListe){
+            if(r.getAntallRette() >= 5){
+                innsatsListe.add(r.rekkePris);
+            }
+        }
+        return innsatsListe;
+    }
 
     public static ArrayList<Bruker> getBrukere() {
         return brukere;

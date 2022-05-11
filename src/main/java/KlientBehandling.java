@@ -99,6 +99,7 @@ public class KlientBehandling implements Runnable {
         svar.put("vinnerRekke", vinnnerTab);
         svar.put("brukerRekker",bruker.hentVinnerRekker());
         svar.put("gevinst", bruker.hentGevinst());
+        svar.put("innsats", bruker.hentVinnerInnsats());
         try {
             utStrøm.writeObject(svar);
         } catch (IOException e) {
