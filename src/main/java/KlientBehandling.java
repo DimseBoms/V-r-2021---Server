@@ -1,15 +1,21 @@
 import java.io.*;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Timer;
 
 public class KlientBehandling implements Runnable {
     private Socket socket;
     private ObjectInputStream innStrøm;
     private ObjectOutputStream utStrøm;
+    //legg i konstruktør
     protected DBAdaptor dbAdaptor = new DBAdaptor();
     private Bruker bruker;
-    protected GevinstBeregning gevinstBeregning;
+    private Rekke rekke;
+    private GevinstBeregning gevinstBeregning;
+    private ArrayList<Integer> vinnnerTab;
 
     // Håndterer klient basert på Socket objektet som blir innsendt
     public KlientBehandling(Socket socket) throws IOException {
@@ -17,6 +23,7 @@ public class KlientBehandling implements Runnable {
             this.socket = socket;
             this.innStrøm = new ObjectInputStream(socket.getInputStream());
             this.utStrøm = new ObjectOutputStream(socket.getOutputStream());
+
         } catch (IOException e) {
             // Forsøker å lukke tilkobling
             socket.close();
@@ -39,10 +46,8 @@ public class KlientBehandling implements Runnable {
                 }
                 // Håndtering av overføring av rekker
                 if(forespørselMap.get("query").equals("sendRekke")) {
-                    System.out.println(forespørselMap);
+                    vinnnerTab = new ArrayList<>(lagVinnerTabell());
                     lagRekke(forespørselMap);
-                    gevinstBeregning = new GevinstBeregning();
-                    //   gevinstBeregning.beregnGevinst(lagVinnerTabell(), (Bruker)forespørselMap.get("rekker"));
                 }
 
             } catch (IOException e) {
@@ -61,7 +66,8 @@ public class KlientBehandling implements Runnable {
         int min = 1;
         int range = max - min + 1;
 
-        for(int i=0; i<6; i++){
+
+        for(int i=0; i<7; i++){
             int rand = (int)(Math.random() * range) + min;
             vinnerTabell.add(rand);
         }
@@ -74,30 +80,49 @@ public class KlientBehandling implements Runnable {
         ArrayList<Integer> innsatsListe = (ArrayList<Integer>)map.get("innsats");
 
         for(int i =0; i<((ArrayList<?>) map.get("rekker")).size(); i++){
-            new Rekke(rekkeListe.get(i),innsatsListe.get(i), bruker);
+            System.out.println(new Rekke(rekkeListe.get(i),innsatsListe.get(i), bruker));
 
             System.out.println(rekkeListe.get(i));
             System.out.println(innsatsListe.get(i));
         }
 
         gevinstBeregning = new GevinstBeregning();
-        gevinstBeregning.beregnGevinst(lagVinnerTabell(), bruker);
+        gevinstBeregning.beregnGevinst(vinnnerTab, bruker);
         insertRekker(bruker);
+        rekkeTilKlient();
     }
+    public void rekkeTilKlient()
+    {
+        System.out.println("sender svar til klient");
+        HashMap<Object, Object> svar = new HashMap<>();
+        svar.put("feilkode", 0);
+        svar.put("vinnerRekke", vinnnerTab);
+        svar.put("brukerRekker",bruker.hentVinnerRekker());
+        svar.put("gevinst", bruker.hentGevinst());
+        try {
+            utStrøm.writeObject(svar);
+        } catch (IOException e) {
+            try {
+                utStrøm.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
 
+
+    }
     public void insertRekker(Bruker bruker){
 
+        System.out.println("sender rekker til db");
         long millis = System.currentTimeMillis();
         java.sql.Timestamp tid = new java.sql.Timestamp(millis);
         dbAdaptor.createLottorekke();
         for(Rekke r: bruker.rekkeListe) {
-            dbAdaptor.insertLottorekke(dbAdaptor.selectBrukerId(bruker.getEpost(), bruker.getTelefonnummer()), tid, r.getAntallRette() ,r.tallRekke.get(0),
-                    r.tallRekke.get(1), r.tallRekke.get(2), r.tallRekke.get(3), r.tallRekke.get(4), r.tallRekke.get(5), r.tallRekke.get(6)
-            );
-            System.out.println("sender rekker til db");
+                dbAdaptor.insertLottorekke(dbAdaptor.selectBrukerId(bruker.getEpost(), bruker.getTelefonnummer()), tid, r.getAntallRette() ,r.tallRekke.get(0),
+                        r.tallRekke.get(1), r.tallRekke.get(2), r.tallRekke.get(3), r.tallRekke.get(4), r.tallRekke.get(5), r.tallRekke.get(6)
+                );
         }
     }
-
     private void loggInnFeil() {
         HashMap<Object, Object> svar = new HashMap<>();
         svar.put("feilkode", -1);
@@ -136,6 +161,7 @@ public class KlientBehandling implements Runnable {
     }
 
     private void lagBruker(HashMap map) {
+        bruker = new Bruker((String) map.get("fornavn"), (String)map.get("etternavn"), (String)map.get("tlf"), (String) map.get("epost"));
         // Lager ny brukerkonto og setter den inn i databasen.
         dbAdaptor.insertBruker((String) map.get("fornavn"), (String) map.get("etternavn"),
                 (String) map.get("tlf"), (String) map.get("epost"));

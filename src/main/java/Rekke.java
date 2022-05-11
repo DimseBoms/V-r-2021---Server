@@ -10,6 +10,19 @@ public class Rekke   {
     }
 
     protected double gevinst;
+    protected int antallRette;
+
+
+
+    public int getAntallRette() {
+        return antallRette;
+    }
+
+
+
+    public void setAntallRette(int antallRette) {
+        this.antallRette = antallRette;
+    }
 
     public void setAntallRette(int antallRette) {
         this.antallRette = antallRette;
@@ -22,7 +35,6 @@ public class Rekke   {
         this.tallRekke = new ArrayList<>(rekkeMedTall);
         Collections.sort(tallRekke);
         this.rekkePris= rekkePris;
-
         bruker.rekkeListe.add(this);
     }
 

@@ -1,12 +1,32 @@
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Bruker {
-    public  ArrayList<Rekke> rekkeListe;
+
+    protected  ArrayList<Rekke> rekkeListe;
+    protected  ArrayList<Rekke> vinnerRekker;
     private String fornavn;
     private String etternavn;
     private String telefonnummer;
     private String epost;
+
+    public String getFornavn() {
+        return fornavn;
+    }
+
+    public String getEtternavn() {
+        return etternavn;
+    }
+
+    public String getTelefonnummer() {
+        return telefonnummer;
+    }
+
+    public String getEpost() {
+        return epost;
+    }
+
     private static ArrayList<Bruker> brukere = new ArrayList<>();
 
     public String getFornavn() {
@@ -32,6 +52,27 @@ public class Bruker {
         this.epost = epost;
         rekkeListe= new ArrayList<>();
         brukere.add(this);
+    }
+
+    //henter rekker som har vunnet
+    public ArrayList<?> hentVinnerRekker(){
+        ArrayList<ArrayList<Integer>> vinnerRekker = new ArrayList<>();
+        for(Rekke r: this.rekkeListe){
+        if(r.getAntallRette() >= 5){
+            vinnerRekker.add(r.tallRekke);
+            }
+        }
+        return vinnerRekker;
+    }
+    public ArrayList<?> hentGevinst() {
+        ArrayList<Integer> gevinstTab = new ArrayList<>();
+        for (Rekke r : this.rekkeListe) {
+            if (r.getAntallRette() >= 5) {
+                gevinstTab.add((int) r.gevinst);
+            }
+            ;
+        }
+        return gevinstTab;
     }
 
     public static ArrayList<Bruker> getBrukere() {

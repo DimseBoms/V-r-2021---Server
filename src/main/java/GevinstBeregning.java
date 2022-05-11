@@ -13,38 +13,41 @@ public class GevinstBeregning {
      **/
 
     public void beregnGevinst (ArrayList<Integer> vinnerRekke, Bruker bruker){
+        System.out.println("bruker sin liste" + bruker.rekkeListe);
         Collections.sort(vinnerRekke);
-        int teller=0;
-        for(Rekke r: bruker.rekkeListe) {
-            for (Integer vinnerTall : vinnerRekke) {
-                for (Integer brukerTall : r.tallRekke) {
-                    if (brukerTall.equals(vinnerTall)) {
-                        teller++;
+        int teller = 0;
+            for(Rekke r: bruker.rekkeListe) {
+                Collections.sort(r.tallRekke);
+                for(int i =0; i<vinnerRekke.size(); i++ ){
+                        if (r.tallRekke.get(i).equals(vinnerRekke.get(i))) {
+                            teller++;
+                            System.out.println("match");
+                        }
                     }
-                }
-            }
-            if (teller == 5) {
+
+
+                r.setAntallRette(teller);
+           // System.out.println(r.getAntallRette());
+
+            teller=0;
+            if (r.getAntallRette()==5) {
                 gevinst += r.rekkePris * 0.15 * 730;
-                r.setGevinst(r.rekkePris * 0.15 * 30000  );
+               r.setGevinst(r.rekkePris * 0.15 * 30000  );
             }
-            else if  (teller == 6) {
+
+             if  (r.getAntallRette()==6) {
                 gevinst += r.rekkePris * 0.15 * 30000;
                 r.setGevinst(r.rekkePris* 0.15 * 30000);
             }
 
-            else if (r.tallRekke.equals(vinnerRekke)) {
+             if (r.tallRekke.equals(vinnerRekke)) {
                 gevinst += r.rekkePris * 0.2 * 5400000;
                 r.setGevinst(r.rekkePris * 0.2 * 5400000);
             }
-
-            teller=0;
             r.setGevinst(gevinst);
-            //send array med vinnerrrekke
-            //send antall rette rekker
-            //send gevinst per rekke
-            r.setAntallRette(teller);
-        }
+            System.out.println(r.gevinst);
 
+        }
 
     }
 

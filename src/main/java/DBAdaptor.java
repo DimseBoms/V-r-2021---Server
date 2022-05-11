@@ -158,14 +158,14 @@ public class DBAdaptor {
     }
 
     protected int selectBrukerId(String epost, String tlf) {
-        int id=0;
+       int id=0;
         try (Connection conn = connect() ) {
             String sql = "select Id from Bruker WHERE Epost = ? AND Telefon = ?;";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, epost);
             pstmt.setString(2, tlf);
             ResultSet rs = pstmt.executeQuery();
-            id = rs.getInt(1);
+             id = rs.getInt(1);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
@@ -176,6 +176,7 @@ public class DBAdaptor {
         return id;
 
     }
+
 
     protected boolean sjekkSamsvar(String epost, String tlf) {
         try (Connection conn = connect() ) {
