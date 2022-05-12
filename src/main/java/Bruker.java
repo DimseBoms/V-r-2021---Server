@@ -54,7 +54,7 @@ public class Bruker {
             if (r.getAntallRette() >= 5) {
                 gevinstTab.add((int) r.gevinst);
             }
-            ;
+
         }
         return gevinstTab;
     }
